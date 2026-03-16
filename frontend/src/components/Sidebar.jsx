@@ -7,7 +7,7 @@ const NAV = [
   { key: 'settings',  label: 'Settings',  icon: '⚙' },
 ]
 
-export default function Sidebar({ current, onNavigate, wsConnected }) {
+export default function Sidebar({ current, onNavigate, wsConnected, localMode }) {
   return (
     <nav style={{
       width: 220, background: '#0F172A', display: 'flex', flexDirection: 'column',
@@ -30,7 +30,7 @@ export default function Sidebar({ current, onNavigate, wsConnected }) {
       </div>
 
       {/* WS status */}
-      <div style={{ padding: '6px 20px 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ padding: '6px 20px', display: 'flex', alignItems: 'center', gap: 6 }}>
         <div style={{
           width: 7, height: 7, borderRadius: '50%',
           background: wsConnected ? '#10B981' : '#EF4444',
@@ -39,6 +39,20 @@ export default function Sidebar({ current, onNavigate, wsConnected }) {
         <span style={{ color: '#64748B', fontSize: 11 }}>
           {wsConnected ? 'Live feed active' : 'Reconnecting…'}
         </span>
+      </div>
+      
+      {/* Local Mode Badge */}
+      <div style={{ padding: '4px 20px 16px', minHeight: 40 }}>
+        {localMode && (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 8px', background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 4,
+            color: '#10B981', fontSize: 10, fontWeight: 600,
+          }}>
+            🔒 Air-gapped Mode
+          </span>
+        )}
       </div>
 
       {/* Nav items */}

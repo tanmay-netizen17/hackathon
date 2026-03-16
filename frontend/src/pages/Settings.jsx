@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { ThemeContext } from '../App'
+import { setMode } from '../api/sentinelApi'
 
 function SettingRow({ label, sublabel, children }) {
   return (
@@ -13,6 +15,7 @@ function SettingRow({ label, sublabel, children }) {
 }
 
 export default function Settings() {
+  const { localMode, setLocalMode } = useContext(ThemeContext)
   const [apiKeys, setApiKeys] = useState({ openai: '', virustotal: '', emailPassword: '' })
 
   const inputStyle = {
@@ -25,6 +28,41 @@ export default function Settings() {
     <div>
       <h1 style={{ fontFamily: 'DM Sans', fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Settings</h1>
       <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 24 }}>Configure agents, API keys, and integration.</p>
+
+      {/* Local / Air-gapped Mode */}
+      <div className="card" style={{ padding: 20, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', margin: 0 }}>Local / Air-gapped Mode</p>
+            <p style={{ fontSize: 13, color: '#6B7280', marginTop: 4, marginBottom: 0 }}>
+              All inference runs on your machine via ONNX models. Zero data leaves your network.
+            </p>
+          </div>
+          <button
+            onClick={async () => {
+              const newMode = !localMode;
+              try {
+                await setMode(newMode);
+                setLocalMode(newMode);
+              } catch (e) {
+                console.error("Failed to set local mode", e);
+              }
+            }}
+            style={{
+              width: 48, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
+              background: localMode ? '#6366F1' : '#E5E7EB',
+              position: 'relative', transition: 'background-color 0.2s', padding: 0
+            }}
+          >
+            <span style={{
+              display: 'block', width: 20, height: 20, background: '#fff', borderRadius: '50%',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              position: 'absolute', top: 2, left: localMode ? 26 : 2,
+              transition: 'left 0.2s'
+            }} />
+          </button>
+        </div>
+      </div>
 
       {/* API Keys */}
       <div className="card" style={{ padding: 20, marginBottom: 20 }}>

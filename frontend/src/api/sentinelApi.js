@@ -8,9 +8,12 @@ export const analyseInput = (payload) => api.post('/analyse', payload).then(r =>
 export const getIncidents = (page = 1, severity) =>
   api.get('/incidents', { params: { page, limit: 20, severity } }).then(r => r.data)
 export const getIncident  = (id) => api.get(`/incidents/${id}`).then(r => r.data)
-export const submitFeedback = (id, is_false_positive, notes) =>
-  api.post(`/feedback/${id}`, { is_false_positive, notes }).then(r => r.data)
+export const submitFeedback = (id, verdict, notes) =>
+  api.post(`/feedback/${id}?verdict=${verdict}&note=${notes}`).then(r => r.data)
 export const getHealth = () => api.get('/health').then(r => r.data)
+export const getModelHealth = () => api.get('/model-health').then(r => r.data)
+export const setMode = (local_mode) => api.post('/settings/mode', { local_mode }).then(r => r.data)
+export const setThreshold = (threshold) => api.post('/settings/threshold', { threshold }).then(r => r.data)
 export const ingestFile = (file) => {
   const fd = new FormData()
   fd.append('file', file)

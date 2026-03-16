@@ -14,6 +14,8 @@ export default function App() {
   const [incidents, setIncidents] = useState([])
   const [wsConnected, setWsConnected] = useState(false)
   const [stats, setStats] = useState({ total: 0, critical: 0, blocked: 0, clean: 0 })
+  const [surgeAlert, setSurgeAlert] = useState(null)
+  const [localMode, setLocalMode] = useState(false)
   const wsRef = useRef(null)
 
   // ── WebSocket live feed ─────────────────────────────────────────────────
@@ -23,6 +25,10 @@ export default function App() {
       wsRef.current = createWebSocket(
         (msg) => {
           if (msg.type === 'ping') return
+          if (msg.type === 'surge_alert') {
+            setSurgeAlert(msg)
+            return
+          }
           setIncidents(prev => {
             const updated = [msg, ...prev].slice(0, 200)
             return updated
@@ -63,9 +69,9 @@ export default function App() {
   const ActivePage = pages[page] || Dashboard
 
   return (
-    <ThemeContext.Provider value={{ incidents, stats, wsConnected, addIncident }}>
+    <ThemeContext.Provider value={{ incidents, stats, wsConnected, addIncident, surgeAlert, setSurgeAlert, localMode, setLocalMode }}>
       <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
-        <Sidebar current={page} onNavigate={setPage} wsConnected={wsConnected} />
+        <Sidebar current={page} onNavigate={setPage} wsConnected={wsConnected} localMode={localMode} />
         <main style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
           <ActivePage onNavigate={setPage} />
         </main>

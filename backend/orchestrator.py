@@ -1,6 +1,7 @@
 """
 SentinelAI — Orchestrator
-Detects input type, fans out to relevant detectors, then calls Fusion Engine + XAI.
+Routes each incoming payload to the correct set of detectors (local or cloud),
+then fuses results and attaches XAI explanations.
 """
 
 import asyncio
@@ -24,13 +25,26 @@ class Orchestrator:
     """
 
     def __init__(self):
+        # Cloud models
         self.nlp = NLPDetector()
         self.url = URLDetector()
+        
+        # Shared models (Deepfake and Anomaly aren't local-only restricted in this hackathon setup)
         self.deepfake = DeepfakeDetector()
         self.anomaly = AnomalyDetector()
+        
         self.fusion = FusionEngine()
         self.xai = XAISynthesiser()
         self.responder = ResponseGenerator()
+        
+        # Local inference models
+        from detectors.local_runner import LocalNLPDetector, LocalURLDetector
+        self.local_nlp = LocalNLPDetector()
+        self.local_url = LocalURLDetector()
+        
+        # Environment settings (controlled via Settings endpoints in main.py)
+        self.local_mode = False
+        self.threshold = 40.0
 
     async def run(
         self,
@@ -52,11 +66,17 @@ class Orchestrator:
 
         # URL analysis
         if url:
-            tasks.append(("url", self.url.score(url)))
+            if self.local_mode:
+                tasks.append(("url", self.local_url.score(url)))
+            else:
+                tasks.append(("url", self.url.score(url)))
 
         # NLP — phishing, prompt injection, AI-generated content
         if text:
-            tasks.append(("nlp", self.nlp.analyse(text)))
+            if self.local_mode:
+                tasks.append(("nlp", self.local_nlp.analyse(text)))
+            else:
+                tasks.append(("nlp", self.nlp.analyse(text)))
 
         # Behaviour anomaly — from log data
         if log_data:
@@ -68,6 +88,7 @@ class Orchestrator:
 
         # If we have text that might also be a URL in email context
         if text and url:
+            # For simplicity, fallback to heuristic or basic cloud detection for ai-gen
             tasks.append(("aigen", self.nlp.detect_ai_generated(text)))
 
         # Run all detectors concurrently

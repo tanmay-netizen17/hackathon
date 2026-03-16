@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { ThemeContext } from '../App'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import ModelHealth from './ModelHealth'
 
 const SEV_COLORS = {
   Clean: '#10B981', Suspicious: '#F59E0B', 'Likely Malicious': '#F97316', Critical: '#EF4444',
@@ -56,7 +57,7 @@ function LiveFeedItem({ incident, idx }) {
 }
 
 export default function Dashboard({ onNavigate }) {
-  const { incidents, stats, wsConnected } = useContext(ThemeContext)
+  const { incidents, stats, wsConnected, surgeAlert, setSurgeAlert } = useContext(ThemeContext)
 
   // Distribution data for donut chart
   const sevCounts = incidents.reduce((acc, inc) => {
@@ -83,6 +84,25 @@ export default function Dashboard({ onNavigate }) {
           border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 13,
         }}>+ Analyse Threat</button>
       </div>
+
+      {surgeAlert && (
+        <div style={{
+          width: '100%', padding: '12px 20px', background: '#FEF2F2', border: '1px solid #FCA5A5',
+          borderRadius: 8, display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24,
+          animation: 'pulseDot 2s ease-in-out infinite'
+        }}>
+          <span style={{ color: '#DC2626', fontWeight: 600, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>🚨</span>
+            {surgeAlert.message}
+          </span>
+          <button 
+            onClick={() => setSurgeAlert(null)} 
+            style={{ marginLeft: 'auto', background: 'transparent', border: 'none', color: '#F87171', cursor: 'pointer', fontSize: 14, padding: 4 }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
@@ -113,6 +133,8 @@ export default function Dashboard({ onNavigate }) {
 
         {/* Chart */}
         <div>
+          <ModelHealth />
+
           <div className="card" style={{ padding: 20, marginBottom: 16 }}>
             <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 14 }}>Threat Distribution</div>
             {pieData.length === 0 ? (
@@ -159,6 +181,17 @@ export default function Dashboard({ onNavigate }) {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Secure-by-Design Badge */}
+          <div style={{ marginTop: 16, padding: '12px 16px', background: '#F0FDF4', borderRadius: 8, border: '1px solid #BBF7D0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <span style={{ color: '#16A34A', fontSize: 16 }}>🛡️</span>
+              <span style={{ color: '#16A34A', fontWeight: 700, fontSize: 13 }}>Secure-by-Design</span>
+            </div>
+            <div style={{ color: '#4ADE80', fontSize: 11, fontWeight: 500 }}>
+              Rate limited · Input sanitised · Audit logged · OWASP headers active
+            </div>
           </div>
         </div>
       </div>
