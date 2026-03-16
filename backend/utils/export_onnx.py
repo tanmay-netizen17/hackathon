@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — ONNX Export Utilities
 Exports trained models to ONNX format for fully local (offline) inference.

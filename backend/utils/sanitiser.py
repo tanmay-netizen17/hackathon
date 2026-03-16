@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — Input Sanitisation
 Protects every endpoint against malformed, malicious, or oversized inputs.

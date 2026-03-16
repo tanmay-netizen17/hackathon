@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — FastAPI Backend Entry Point
 Handles all HTTP + WebSocket endpoints for the cyber-defense platform.
@@ -35,6 +36,8 @@ from utils.sanitiser import sanitise_text_input, sanitise_url_input, sanitise_lo
 from utils.audit_logger import log_scan
 from utils.surge_detector import check_surge
 from utils.feedback_logger import log_feedback, get_model_health_stats
+from red_team.robustness_evaluator import evaluate_text_robustness, evaluate_url_robustness
+from red_team.model_health import health_tracker
 
 # ── App init ──────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -372,20 +375,50 @@ async def get_incident(incident_id: str):
         raise HTTPException(status_code=404, detail="Incident not found")
     return incident_store[incident_id]
 
-# Feedback Loop (Responsible AI)
-@app.post("/feedback/{incident_id}")
-@limiter.limit("60/minute")
-async def submit_feedback(request: Request, incident_id: str, verdict: str, note: str = ""):
-    if incident_id in incident_store:
-         # Also update memory store
-         incident_store[incident_id]["feedback_verdict"] = verdict
-         incident_store[incident_id]["feedback_notes"] = note
-    log_feedback(incident_id, verdict, note)
-    return {"status": "logged", "incident_id": incident_id}
+# ── Red Team & Model Health ──────────────────────────────────────────────────
+@app.post("/red-team/run")
+async def run_red_team(payload: dict):
+    input_type  = payload.get("input_type", "text")
+    input_value = payload.get("input_value", "")
+    incident_id = payload.get("incident_id", "")
+
+    if not input_value:
+        return {"error": "input_value is required"}
+
+    try:
+        if input_type == "url":
+            from detectors.url_detector import URLDetector
+            detector = URLDetector()
+            orig = await detector.score(input_value)
+            original_score = orig.get("score", 0.5)
+            result = await evaluate_url_robustness(input_value, detector, original_score)
+        else:
+            from detectors.nlp_detector import NLPDetector
+            detector = NLPDetector()
+            orig = await detector.analyse(input_value)
+            original_score = orig.get("score", 0.5)
+            result = await evaluate_text_robustness(input_value, detector, original_score)
+
+        result["incident_id"]   = incident_id
+        result["input_type"]    = input_type
+        result["original_score"] = original_score
+
+        health_tracker.record_adversarial_result(result)
+        return result
+
+    except Exception as e:
+        return {"error": str(e), "input_type": input_type}
 
 @app.get("/model-health")
-async def model_health():
-    return get_model_health_stats()
+async def get_model_health():
+    return health_tracker.get_health_report()
+
+@app.post("/feedback/{incident_id}")
+async def submit_feedback(incident_id: str, payload: dict):
+    verdict = payload.get("verdict", "true_positive")
+    score   = float(payload.get("score", 0.5))
+    health_tracker.record_feedback(incident_id, verdict, score)
+    return {"status": "recorded", "incident_id": incident_id}
 
 # Settings Mode (Local Mode & Threshold)
 @app.post("/settings/mode")

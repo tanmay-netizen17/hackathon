@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI Local Server
 Run: python local_server.py

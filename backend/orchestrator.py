@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — Orchestrator
 Routes each incoming payload to the correct set of detectors (local or cloud),

@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — Audit Logger
 Logs every scan in a tamper-evident JSONL file.

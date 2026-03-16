@@ -134,6 +134,11 @@ class FusionEngine:
         # Clamp final raw to [0.0, 1.0] before scaling to 0–100
         raw_score = max(0.0, min(1.0, raw_score))
 
+        # ── High Confidence Override ─────────────────────────────────────────
+        # If any detector is >= 0.90 confidence, ensure base critical severity
+        if any(float(detector_results.get(det, {}).get("score", 0.0)) >= 0.90 for det in detectors_triggered):
+            raw_score = max(raw_score, 0.85)
+
         # Scale to 0–100 integer
         sentinel_score = int(round(raw_score * 100))
 

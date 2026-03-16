@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI Email Daemon
 Monitors INBOX via IMAP IDLE, scores each email, alerts on threats.

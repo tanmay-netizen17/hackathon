@@ -1,186 +1,191 @@
 import React, { useState } from 'react'
 
-const DET_LABELS = {
-  nlp: 'NLP Phishing Analysis',
-  url: 'Domain & Lexical Scanner',
-  deepfake: 'Media Authenticity Engine',
-  anomaly: 'Behavioural Profiler',
-  aigen: 'LLM Artifact Detector',
+function EvidenceCard({ detector, data }) {
+  const [open, setOpen] = useState(true)
+
+  // Colour based on score
+  const colour = data.score >= 0.8 ? '#F04438'
+               : data.score >= 0.6 ? '#EF6820'
+               : data.score >= 0.4 ? '#F79009'
+               : '#12B76A'
+
+  return (
+    <div style={{ border:`2px solid ${colour}20`, borderLeft:`4px solid ${colour}`,
+                  borderRadius:10, marginBottom:12, overflow:'hidden' }}>
+      
+      {/* Header */}
+      <div onClick={() => setOpen(!open)} style={{
+        padding:'14px 18px', cursor:'pointer', display:'flex',
+        justifyContent:'space-between', alignItems:'center',
+        background: data.score >= 0.5 ? `${colour}08` : '#FAFAFA'
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <span style={{
+            fontFamily:'var(--font-mono)', fontSize:18, fontWeight:700, color: colour
+          }}>
+            {data.score_pct ?? Math.round(data.score * 100)}%
+          </span>
+          <div>
+            <div style={{ fontWeight:600, fontSize:14, color:'#0D1117' }}>
+              {detector === 'url'      ? 'URL Detector'
+               : detector === 'nlp'   ? 'NLP / Phishing Detector'
+               : detector === 'deepfake' ? 'Media Authenticity Engine'
+               : detector === 'anomaly'  ? 'Behaviour Anomaly Engine'
+               : detector}
+            </div>
+            <div style={{ fontSize:12, color:'#6B7280' }}>
+              Method: {data.method} &nbsp;·&nbsp;
+              {data.score >= 0.5 ? '⚠ Malicious signal detected' : '✓ No threat signal'}
+            </div>
+          </div>
+        </div>
+        
+        {/* Mini score bar */}
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <div style={{ width:120, height:6, background:'#E5E7EB', borderRadius:3 }}>
+            <div style={{
+              width:`${(data.score_pct ?? Math.round(data.score*100))}%`,
+              height:'100%', background: colour, borderRadius:3,
+              transition:'width 0.8s ease-out'
+            }}/>
+          </div>
+          <span style={{ fontSize:12 }}>{open ? '▲' : '▼'}</span>
+        </div>
+      </div>
+
+      {/* Body */}
+      {open && (
+        <div style={{ padding:'16px 18px', borderTop:'1px solid #F0F0F0' }}>
+          
+          {/* Evidence notes — plain English explanation */}
+          {data.evidence_notes?.length > 0 && (
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:11, fontWeight:600, color:'#6B7280',
+                            letterSpacing:'0.06em', marginBottom:8 }}>
+                EVIDENCE
+              </div>
+              {data.evidence_notes.map((note, i) => (
+                <div key={i} style={{
+                  display:'flex', gap:8, marginBottom:6, fontSize:13, color:'#374151'
+                }}>
+                  <span style={{ color: colour, flexShrink:0 }}>→</span>
+                  <span>{note}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* URL: feature importance */}
+          {detector === 'url' && data.feature_importance?.length > 0 && (
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:11, fontWeight:600, color:'#6B7280',
+                            letterSpacing:'0.06em', marginBottom:8 }}>
+                TOP FEATURES (SHAP-STYLE IMPORTANCE)
+              </div>
+              {data.feature_importance.map((f, i) => (
+                <div key={i} style={{
+                  display:'flex', alignItems:'center', gap:10,
+                  marginBottom:6, fontSize:12
+                }}>
+                  <span style={{ width:180, color:'#374151' }}>{f.feature}</span>
+                  <div style={{ flex:1, height:5, background:'#E5E7EB', borderRadius:2 }}>
+                    <div style={{
+                      width:`${Math.min(f.value * 100, 100)}%`,
+                      height:'100%',
+                      background: f.impact === 'high' ? '#F04438' : '#F79009',
+                      borderRadius:2
+                    }}/>
+                  </div>
+                  <span style={{ fontFamily:'var(--font-mono)', fontSize:11,
+                                 color:'#6B7280', width:40, textAlign:'right' }}>
+                    {f.value.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+              {data.registrable_domain && (
+                <div style={{ marginTop:8, fontSize:12, color:'#6B7280' }}>
+                  Real domain: <code style={{ fontFamily:'var(--font-mono)',
+                    background:'#F1F3F5', padding:'2px 6px', borderRadius:4 }}>
+                    {data.registrable_domain}
+                  </code>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* NLP: top tokens */}
+          {detector === 'nlp' && data.top_tokens?.length > 0 && (
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:11, fontWeight:600, color:'#6B7280',
+                            letterSpacing:'0.06em', marginBottom:8 }}>
+                TRIGGER TOKENS
+              </div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                {data.top_tokens.map((tok, i) => (
+                  <span key={i} style={{
+                    background:'#FEF3F2', border:'1px solid #FECDCA',
+                    borderRadius:6, padding:'3px 10px',
+                    fontSize:12, fontFamily:'var(--font-mono)', color:'#B42318'
+                  }}>
+                    {tok}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Deepfake: signals breakdown */}
+          {detector === 'deepfake' && data.signals && (
+            <div>
+              <div style={{ fontSize:11, fontWeight:600, color:'#6B7280',
+                            letterSpacing:'0.06em', marginBottom:8 }}>
+                SIGNAL BREAKDOWN
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                {Object.entries(data.signals)
+                  .filter(([, v]) => v !== null)
+                  .map(([key, val]) => (
+                  <div key={key} style={{
+                    background:'#F8F9FA', borderRadius:8, padding:'10px 12px'
+                  }}>
+                    <div style={{ fontSize:11, color:'#6B7280', marginBottom:4 }}>
+                      {key.replace(/_/g, ' ').toUpperCase()}
+                    </div>
+                    <div style={{ fontSize:16, fontWeight:700,
+                                  fontFamily:'var(--font-mono)',
+                                  color: val > 0.5 ? '#F04438' :
+                                         val > 0.3 ? '#F79009' : '#12B76A' }}>
+                      {Math.round(val * 100)}%
+                    </div>
+                    <div style={{ width:'100%', height:4, background:'#E5E7EB',
+                                  borderRadius:2, marginTop:4 }}>
+                      <div style={{
+                        width:`${Math.round(val * 100)}%`, height:'100%',
+                        background: val > 0.5 ? '#F04438' :
+                                    val > 0.3 ? '#F79009' : '#12B76A',
+                        borderRadius:2, transition:'width 0.8s ease-out'
+                      }}/>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
-export default function EvidenceCard({ evidence = {}, detectors_triggered = [] }) {
-  const [open, setOpen] = useState(null)
-
+export default function EvidenceCardsWrapper({ evidence = {}, detectors_triggered = [] }) {
   if (!Object.keys(evidence).length) {
     return <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No detector evidence available.</p>
   }
-
-  // Pre-expand if only one detector triggered
-  React.useEffect(() => {
-    const keys = Object.keys(evidence)
-    if (keys.length === 1 && open === null) {
-      setOpen(keys[0])
-    }
-  }, [evidence, open])
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {Object.entries(evidence).map(([det, data]) => {
-        const isOpen = open === det
-        const score = data.score || 0
-        const pct = Math.round(score * 100)
-        
-        const colour = pct > 70 ? 'var(--critical)' : 
-                       pct > 40 ? 'var(--likely)' : 
-                       pct > 20 ? 'var(--suspicious)' : 
-                       'var(--clean)'
-        const dimColour = pct > 70 ? 'var(--critical-dim)' : 
-                          pct > 40 ? 'var(--likely-dim)' : 
-                          pct > 20 ? 'var(--suspicious-dim)' : 
-                          'var(--clean-dim)'
-
-        return (
-          <div key={det} className="card" style={{ 
-            overflow: 'hidden', 
-            borderLeft: `3px solid ${colour}`,
-            borderRadius: '0 8px 8px 0',
-          }}>
-            <button
-              onClick={() => setOpen(isOpen ? null : det)}
-              style={{
-                width: '100%', display: 'flex', alignItems: 'center', gap: 16,
-                padding: '16px 20px', background: isOpen ? 'var(--bg-primary)' : 'var(--bg-surface)', 
-                border: 'none', cursor: 'pointer', textAlign: 'left',
-                transition: 'background 0.15s',
-              }}
-            >
-              {/* Score Box */}
-              <div style={{
-                width: 48, height: 48, borderRadius: 8, background: dimColour,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 15, fontWeight: 700, color: colour, fontFamily: 'var(--font-mono)',
-                flexShrink: 0, border: `1px solid ${colour}20`,
-              }}>
-                {pct}%
-              </div>
-              
-              {/* Info */}
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
-                  {DET_LABELS[det] || det.toUpperCase()}
-                </div>
-                {/* Micro progress bar */}
-                <div style={{ marginTop: 8, background: 'var(--bg-sunken)', borderRadius: 4, height: 4, overflow: 'hidden', width: '100%', maxWidth: 200 }}>
-                  <div style={{
-                    width: `${pct}%`, height: '100%', background: colour,
-                    transition: 'width 1s cubic-bezier(0.16, 1, 0.3, 1)', borderRadius: 4,
-                  }} />
-                </div>
-              </div>
-
-              {/* Toggle arrow */}
-              <div style={{ 
-                color: 'var(--text-muted)', 
-                transform: `rotate(${isOpen ? 180 : 0}deg)`, 
-                transition: 'transform 0.2s ease', 
-                display: 'flex', alignItems: 'center' 
-              }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-            </button>
-
-            {/* Expanded Content */}
-            {isOpen && (
-              <div style={{
-                padding: '0 20px 20px 84px', 
-                background: 'var(--bg-primary)',
-                animation: 'fadeScaleIn 0.25s ease',
-              }}>
-                {/* Explanation */}
-                {data.explanation && (
-                  <p style={{ 
-                    fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 16px', lineHeight: 1.6 
-                  }}>
-                    {data.explanation}
-                  </p>
-                )}
-
-                {/* NLP Tokens */}
-                {det === 'nlp' && data.top_tokens?.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 600, letterSpacing: '0.04em' }}>ATTENTION TOKENS</div>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {data.top_tokens.map(t => (
-                        <span key={t} style={{
-                          padding: '3px 10px', borderRadius: 4,
-                          background: 'var(--critical-dim)', color: 'var(--critical)',
-                          fontSize: 12, fontFamily: 'var(--font-mono)', border: '1px solid var(--critical)20'
-                        }}>{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* URL SHAP Values */}
-                {det === 'url' && data.shap_values?.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '8px 0', fontWeight: 600, letterSpacing: '0.04em' }}>FEATURE CONTRIBUTION</div>
-                    <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-                      {data.shap_values.slice(0, 5).map(s => {
-                        const isPos = s.shap_value > 0
-                        return (
-                          <div key={s.feature} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8, '&:lastChild': { marginBottom: 0 } }}>
-                            <div style={{ width: 140, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                              {s.feature}
-                            </div>
-                            <div style={{ flex: 1, height: 6, background: 'var(--bg-sunken)', borderRadius: 3, overflow: 'hidden' }}>
-                              <div style={{
-                                width: `${Math.min(100, Math.abs(s.shap_value) * 200)}%`,
-                                height: '100%',
-                                background: isPos ? 'var(--critical)' : 'var(--clean)',
-                                borderRadius: 3,
-                              }} />
-                            </div>
-                            <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: isPos ? 'var(--critical)' : 'var(--clean)', width: 56, textAlign: 'right' }}>
-                              {isPos ? '+' : ''}{s.shap_value.toFixed(3)}
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* AI / Deepfake / Anomaly metrics */}
-                {det === 'deepfake' && (
-                  <div style={{ display: 'flex', gap: 24, padding: 12, background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-                    <div><div style={{ fontSize:10, color:'var(--text-muted)' }}>SPATIAL</div><div className="mono" style={{ fontSize:16, color:'var(--text-primary)'}}>{Math.round((data.spatial_score||0)*100)}%</div></div>
-                    <div><div style={{ fontSize:10, color:'var(--text-muted)' }}>TEMPORAL</div><div className="mono" style={{ fontSize:16, color:'var(--text-primary)'}}>{Math.round((data.temporal_score||0)*100)}%</div></div>
-                    <div><div style={{ fontSize:10, color:'var(--text-muted)' }}>FRAMES</div><div className="mono" style={{ fontSize:16, color:'var(--text-primary)'}}>{data.frames_analysed||1}</div></div>
-                  </div>
-                )}
-
-                {det === 'aigen' && data.ai_markers_found?.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 600, letterSpacing: '0.04em' }}>SIGNATURE MARKERS</div>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {data.ai_markers_found.map(m => (
-                        <span key={m} style={{
-                          padding: '3px 10px', borderRadius: 4,
-                          background: 'var(--accent-dim)', color: 'var(--accent-hover)', border: '1px solid var(--accent)20',
-                          fontSize: 12, fontFamily: 'var(--font-mono)',
-                        }}>{m}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )
-      })}
+      {Object.entries(evidence).map(([det, data]) => (
+        <EvidenceCard key={det} detector={det} data={data} />
+      ))}
     </div>
   )
 }

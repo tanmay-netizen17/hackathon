@@ -1,0 +1,79 @@
+{
+  "incident_id": "",
+  "sentinel_score": 26,
+  "severity": "Clean",
+  "detectors_triggered": [
+    "url"
+  ],
+  "coordination_multiplier": 1.0,
+  "context_modifiers": [
+    "after_hours"
+  ],
+  "context_modifier_total": 0.04,
+  "threat_brief": "SentinelAI detected malicious URL with 26% confidence (Clean severity). Multiple threat indicators were identified. Treat with caution and verify with IT.",
+  "evidence": {
+    "url": {
+      "score": 1.0,
+      "score_pct": 100,
+      "url": "",
+      "label": "malicious",
+      "method": "lightgbm",
+      "registrable_domain": "security-update-login.xyz",
+      "full_host": "paypal.com.security-update-login.xyz",
+      "feature_importance": [
+        {
+          "feature": "Subdomain Levels",
+          "value": 2.0,
+          "impact": "high"
+        },
+        {
+          "feature": "Extra Subdomain Count",
+          "value": 2.0,
+          "impact": "high"
+        },
+        {
+          "feature": "Suspicious Tld",
+          "value": 1.0,
+          "impact": "high"
+        },
+        {
+          "feature": "Brand In Subdomain",
+          "value": 1.0,
+          "impact": "high"
+        },
+        {
+          "feature": "Phishing Path Words",
+          "value": 1.0,
+          "impact": "high"
+        },
+        {
+          "feature": "Combined Phishing Pattern",
+          "value": 1.0,
+          "impact": "high"
+        }
+      ],
+      "evidence_notes": [
+        "Brand impersonation: 'paypal' appears in subdomain, but real domain is 'security-update-login.xyz'",
+        "Suspicious TLD: .xyz is commonly used in phishing",
+        "Path contains credential-harvesting keywords",
+        "Excessive subdomain nesting: 2 extra levels"
+      ],
+      "risk_category": ""
+    }
+  },
+  "mitre_tactic": "T1192",
+  "mitre_label": "Spearphishing Link",
+  "mitre_phase": "Initial Access",
+  "mitre_description": "Spearphishing links are malicious URLs sent to specific targets. They often lead to credential harvest pages or malware downloads.",
+  "mitre_mitigations": [
+    "Block access to known malicious URLs via web proxy.",
+    "Implement URL reputation scanning.",
+    "Educate users about hovering over links before clicking."
+  ],
+  "recommended_action": "URL appears safe. Standard browsing precautions apply.",
+  "primary_threat": "url_malicious",
+  "url_risk_category": "",
+  "auto_detected": false,
+  "ingestion_source": "manual",
+  "timestamp": "2026-03-16T21:01:16.223647+00:00"
+}

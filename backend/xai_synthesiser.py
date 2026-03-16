@@ -117,27 +117,17 @@ class XAISynthesiser:
 
     @staticmethod
     def _url_evidence(r: dict) -> dict:
-        top_features = r.get("top_features", [])
-        shap_values = XAISynthesiser._compute_shap_values(r.get("all_features", {}))
         return {
             "score": r.get("score", 0),
+            "score_pct": r.get("score_pct", 0),
             "url": r.get("url", ""),
-            "normalised_url": r.get("normalised_url", ""),
-            "domain_age_days": r.get("domain_age_days", -1),
-            "entropy": r.get("entropy", 0),
+            "label": r.get("label", ""),
+            "method": r.get("method", ""),
+            "registrable_domain": r.get("registrable_domain", ""),
+            "full_host": r.get("full_host", ""),
+            "feature_importance": r.get("feature_importance", []),
+            "evidence_notes": r.get("evidence_notes", []),
             "risk_category": r.get("risk_category", ""),
-            "top_features": top_features,
-            "shap_values": shap_values,
-            # Boolean flags — v1 + v2 keys
-            "has_digit_substitution": r.get("has_digit_substitution", False),
-            "is_ip_address": r.get("is_ip_address", False),
-            "uses_shortener": r.get("uses_shortener", False),
-            "has_homoglyph": r.get("has_homoglyph", False),
-            "is_idn": r.get("is_idn", False),
-            "dangerous_scheme": r.get("dangerous_scheme", False),
-            "suspicious_tld": r.get("suspicious_tld", False),
-            "has_at_in_url": r.get("has_at_in_url", False),
-            "explanation": XAISynthesiser._url_explain(r),
         }
 
     @staticmethod
@@ -177,14 +167,13 @@ class XAISynthesiser:
     def _deepfake_evidence(r: dict) -> dict:
         return {
             "score": r.get("score", 0),
-            "spatial_score": r.get("spatial_score", 0),
-            "temporal_score": r.get("temporal_score", 0),
+            "score_pct": r.get("score_pct", 0),
+            "label": r.get("label", ""),
+            "method": r.get("method", ""),
+            "signals": r.get("signals", {}),
+            "evidence_notes": r.get("evidence_notes", []),
             "frames_analysed": r.get("frames_analysed", 1),
-            "model_used": r.get("model_used", "heuristic"),
-            "compression_artifacts": r.get("compression_artifacts", False),
-            "manipulation_regions": r.get("manipulation_regions"),
-            "gradcam_note": "Grad-CAM heatmap highlights face/splice region with high activation.",
-            "explanation": XAISynthesiser._deepfake_explain(r),
+            "consistency": r.get("consistency", 0.0),
         }
 
     @staticmethod

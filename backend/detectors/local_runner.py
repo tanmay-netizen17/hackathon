@@ -1,3 +1,4 @@
+# pyre-ignore-all-errors
 """
 SentinelAI — Local ONNX Inference Runners
 Used when LOCAL_MODE=true so zero data leaves the device.

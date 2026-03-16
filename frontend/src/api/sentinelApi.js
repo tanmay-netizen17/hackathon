@@ -24,8 +24,13 @@ export async function analyseInput(payload) {
     // Local server returns simpler response — wrap it to match cloud format
     return normaliseLocalResponse(res.data, inputType, inputValue)
   } else {
-    // Cloud still expects the original payload
-    const res = await axios.post(`${CLOUD}/analyse`, payload)
+    // Cloud expects the new schema: url, text, or log_data
+    const reqPayload = {}
+    if (inputType === 'url') reqPayload.url = inputValue
+    else if (inputType === 'log') reqPayload.log_data = inputValue
+    else reqPayload.text = inputValue
+
+    const res = await axios.post(`${CLOUD}/analyse`, reqPayload)
     return res.data
   }
 }
