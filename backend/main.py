@@ -35,7 +35,7 @@ app.add_middleware(
 
 orchestrator = Orchestrator()
 
-# In-memory incident store (replace with DB in production)
+# In-memory incident store
 incident_store: dict[str, dict] = {}
 # Active WebSocket connections
 ws_clients: list[WebSocket] = []
@@ -146,6 +146,48 @@ async def ingest_log(req: LogIngestRequest):
     return JSONResponse(content=incident)
 
 
+# ── Client-friendly analysis API (used by extension) ───────────────────────────
+@app.post("/analyze/url")
+async def analyze_url(req: AnalyseRequest):
+    """Specific endpoint for browser extension URL analysis."""
+    incident = await orchestrator.run(url=req.url, source="browser_extension")
+    incident["incident_id"] = make_incident_id()
+    incident_store[incident["incident_id"]] = incident
+    asyncio.create_task(broadcast_incident(incident))
+    return {
+        "score": incident["sentinel_score"],
+        "severity": incident["severity"].lower(),
+        "explanation": incident["threat_brief"],
+        "incident_id": incident["incident_id"]
+    }
+
+
+@app.post("/analyze/text")
+async def analyze_text(req: AnalyseRequest):
+    """Specific endpoint for browser extension text/email analysis."""
+    incident = await orchestrator.run(text=req.text, source="browser_extension_overlay")
+    incident["incident_id"] = make_incident_id()
+    incident_store[incident["incident_id"]] = incident
+    asyncio.create_task(broadcast_incident(incident))
+    return {
+        "score": incident["sentinel_score"],
+        "severity": incident["severity"].lower(),
+        "explanation": incident["threat_brief"],
+        "incident_id": incident["incident_id"]
+    }
+
+
+@app.post("/log/threat")
+async def log_threat(incident_data: dict):
+    """External logging endpoint for extension-side detections."""
+    incident_id = make_incident_id()
+    incident_data["incident_id"] = incident_id
+    incident_data["timestamp"] = datetime.now(timezone.utc).isoformat()
+    incident_store[incident_id] = incident_data
+    asyncio.create_task(broadcast_incident(incident_data))
+    return {"status": "logged", "incident_id": incident_id}
+
+
 @app.post("/ingest/file")
 async def ingest_file(file: UploadFile = File(...)):
     """Accept uploaded file (image/video for deepfake, or text file)."""
@@ -217,7 +259,7 @@ async def websocket_live(websocket: WebSocket):
     await websocket.accept()
     ws_clients.append(websocket)
     # Send last 10 incidents immediately on connect
-    recent = sorted(incident_store.values(), key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
+    recent = sorted(list(incident_store.values()), key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
     for inc in recent:
         await websocket.send_text(json.dumps(inc))
     try:

@@ -7,7 +7,9 @@
         "webNavigation",
         "tabs",
         "storage",
-        "scripting"
+        "scripting",
+        "notifications",
+        "activeTab"
     ],
     "host_permissions": [
         "<all_urls>"
