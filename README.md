@@ -2,7 +2,7 @@
 
 > AI-powered multi-threat cyber defense platform. Detects, explains, and blocks phishing URLs, malicious emails, deepfakes, prompt injections, and behaviour anomalies — in real time.
 
----
+--- 
 
 ## What It Does
 
