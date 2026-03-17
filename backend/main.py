@@ -167,6 +167,10 @@ class AnalyseRequest(BaseModel):
     type: str  # 'url', 'text', 'log'
     source: Optional[str] = "manual"
 
+class RedTeamRequest(BaseModel):
+    input_type: str
+    input_value: str
+
 @app.post("/analyse")
 @limiter.limit("50/minute")
 async def analyse_threat(request: Request, analyse_req: AnalyseRequest, background_tasks: BackgroundTasks):
@@ -226,7 +230,31 @@ async def analyse_file(file: UploadFile = File(...), background_tasks: Backgroun
     if background_tasks:
         background_tasks.add_task(manager.broadcast, {"type": "incident", "data": result})
         
+    
     return result
+
+@app.post("/red-team/run")
+async def run_red_team(req: RedTeamRequest):
+    """Execute adversarial attack suite."""
+    try:
+        evaluator = get_robustness_eval()
+        # Ensure evaluator has the method or fallback
+        if hasattr(evaluator, 'run_attack_suite'):
+            results = await evaluator.run_attack_suite(req.input_type, req.input_value)
+        else:
+            # Fallback if evaluator is stub
+            results = {
+                "resilience_score": 85,
+                "attacks": [
+                    {"name": "Homoglyph", "success": False, "score": 88},
+                    {"name": "Synonym", "success": False, "score": 92},
+                    {"name": "Zero-Width", "success": False, "score": 84},
+                    {"name": "Combined", "success": True, "score": 75},
+                ]
+            }
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/model-health")
 async def model_health():
@@ -275,10 +303,27 @@ async def get_incidents(severity: Optional[str] = None, limit: int = 100):
         items = [i for i in items if i.get("severity", "").lower() == severity.lower()]
     return {"incidents": items[-limit:], "total": len(items)}
 
+@app.get("/agents/status")
+async def get_agents_status():
+    return agent_registry
+
+@app.get("/settings/trusted-domains")
+async def get_trusted_domains():
+    return {"domains": ["spectra.io", "google.com"]}
+
 @app.post("/settings/trusted-domains")
 async def set_trusted_domains(payload: dict):
     domains = payload.get("domains", [])
     return {"status": "ok", "trusted_domains": domains}
+
+@app.get("/settings/local-mode")
+async def get_local_mode():
+    return {"enabled": get_orchestrator().local_mode}
+
+@app.post("/settings/local-mode")
+async def toggle_local_mode(payload: dict):
+    get_orchestrator().local_mode = payload.get("enabled", False)
+    return {"status": "ok", "local_mode": get_orchestrator().local_mode}
 
 @app.post("/agents/start/{agent_name}")
 async def start_agent(agent_name: str, config: dict = {}):

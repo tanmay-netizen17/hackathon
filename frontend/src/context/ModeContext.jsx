@@ -41,12 +41,26 @@ export function ModeProvider({ children }) {
         error: 'Local server not running. Start it with: python local_server.py'
       }
     }
+    
+    try {
+      const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      await axios.post(`${API}/settings/local-mode`, { enabled: true })
+    } catch (e) {
+      console.error("Failed to sync local mode with backend", e)
+    }
+
     setMode('local')
     localStorage.setItem('sentinel_mode', 'local')
     return { success: true }
   }
 
-  function enableCloudMode() {
+  async function enableCloudMode() {
+    try {
+      const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      await axios.post(`${API}/settings/local-mode`, { enabled: false })
+    } catch (e) {
+      console.error("Failed to sync cloud mode with backend", e)
+    }
     setMode('cloud')
     localStorage.setItem('sentinel_mode', 'cloud')
   }

@@ -32,3 +32,7 @@ class RedTeamAttacker:
             else:
                 new_domain += char
         return new_domain
+
+    def inject_zero_width(self, text: str) -> str:
+        """Inserts invisible characters to break tokenization."""
+        return "\u200b".join(text[i:i+3] for i in range(0, len(text), 3))
