@@ -1,0 +1,14 @@
+Loading weights:   0%|          | 0/41 [00:00<?, ?it/s]Loading weights: 100%|##########| 41/41 [00:00<00:00, 23263.86it/s]
+[1mBertForSequenceClassification LOAD REPORT[0m from: mrm8488/bert-tiny-finetuned-sms-spam-detection
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+[3mNotes:
+- UNEXPECTED[3m	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+INFO:     Started server process [21284]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.

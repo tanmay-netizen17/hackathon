@@ -45,7 +45,7 @@ def _load_model():
             print(f"[DeepfakeDetector] [WARN] Model load failed: {e}")
             return None
 
-    _load_model()
+    return None
 
 class DeepfakeDetector:
     """

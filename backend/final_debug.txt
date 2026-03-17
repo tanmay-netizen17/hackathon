@@ -31,4 +31,411 @@ INFO:     Started server process [16952]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
- 
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [16952]
+WARNING:  WatchFiles detected changes in 'detectors\nlp_detector.py', 'main.py', 'fusion_engine.py', 'detectors\url_detector.py', 'test_orc.py', 'detectors\deepfake_detector.py', 'main_mini.py', 'main_no_slowapi.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\__init__.py", line 30, in <module>
+    from . import dependency_versions_check
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\dependency_versions_check.py", line 16, in <module>
+    from .utils.versions import require_version, require_version_core
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\__init__.py", line 22, in <module>
+    from .auto_docstring import (
+    ...<10 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\auto_docstring.py", line 32, in <module>
+    from .generic import ModelOutput
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\generic.py", line 32, in <module>
+    import numpy as np
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+    ...<3 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\__init__.py", line 22, in <module>
+    from . import multiarray
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1333, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1267, in _find_spec
+  File "<frozen importlib._bootstrap_external>", line 1295, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 1269, in _get_spec
+  File "<frozen importlib._bootstrap_external>", line 1401, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 166, in _path_isfile
+  File "<frozen importlib._bootstrap_external>", line 158, in _path_is_mode_type
+  File "<frozen importlib._bootstrap_external>", line 152, in _path_stat
+KeyboardInterrupt
+WARNING:  WatchFiles detected changes in 'detectors\deepfake_detector.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "<frozen importlib._bootstrap>", line 1423, in _handle_fromlist
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2096, in __getattr__
+    module = self._get_module(self._class_to_module[name])
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2288, in _get_module
+    return importlib.import_module("." + module_name, self.__name__)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\pipelines\__init__.py", line 27, in <module>
+    from ..image_processing_utils import BaseImageProcessor
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\image_processing_utils.py", line 23, in <module>
+    from .processing_utils import ImagesKwargs, Unpack
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\processing_utils.py", line 79, in <module>
+    from .modeling_utils import PreTrainedAudioTokenizerBase
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\modeling_utils.py", line 86, in <module>
+    from .loss.loss_utils import LOSS_MAPPING
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_utils.py", line 20, in <module>
+    from .loss_d_fine import DFineForObjectDetectionLoss
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_d_fine.py", line 21, in <module>
+    from .loss_for_object_detection import box_iou
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_for_object_detection.py", line 27, in <module>
+    from scipy.optimize import linear_sum_assignment
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\__init__.py", line 422, in <module>
+    from ._optimize import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\_optimize.py", line 33, in <module>
+    from scipy.linalg import cholesky, issymmetric, LinAlgError
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\__init__.py", line 201, in <module>
+    from ._misc import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\_misc.py", line 4, in <module>
+    from .lapack import get_lapack_funcs
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\lapack.py", line 874, in <module>
+    from scipy.linalg import _flapack
+KeyboardInterrupt
+[URLDetector] [OK] LightGBM model loaded
+Loading weights:   0%|          | 0/41 [00:00<?, ?it/s]Loading weights: 100%|##########| 41/41 [00:00<00:00, 7902.87it/s]
+[1mBertForSequenceClassification LOAD REPORT[0m from: mrm8488/bert-tiny-finetuned-sms-spam-detection
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+[3mNotes:
+- UNEXPECTED[3m	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/41 [00:00<?, ?it/s]Loading weights: 100%|##########| 41/41 [00:00<00:00, 7790.81it/s]
+[1mBertForSequenceClassification LOAD REPORT[0m from: mrm8488/bert-tiny-finetuned-sms-spam-detection
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+[3mNotes:
+- UNEXPECTED[3m	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+INFO:     Started server process [5964]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'detectors\url_detector.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5964]
+WARNING:  WatchFiles detected changes in 'debug_server_pro.py', 'test_imports.py', 'main.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\__init__.py", line 30, in <module>
+    from . import dependency_versions_check
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\dependency_versions_check.py", line 16, in <module>
+    from .utils.versions import require_version, require_version_core
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\__init__.py", line 22, in <module>
+    from .auto_docstring import (
+    ...<10 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\auto_docstring.py", line 32, in <module>
+    from .generic import ModelOutput
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\generic.py", line 32, in <module>
+    import numpy as np
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+    ...<3 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\__init__.py", line 22, in <module>
+    from . import multiarray
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1333, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1267, in _find_spec
+  File "<frozen importlib._bootstrap_external>", line 1295, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 1269, in _get_spec
+  File "<frozen importlib._bootstrap_external>", line 1368, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 152, in _path_stat
+KeyboardInterrupt
+INFO:     Started server process [1300]
+INFO:     Waiting for application startup.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[*] SentinelAI Backend starting up...
+Loading weights:   0%|          | 0/41 [00:00<?, ?it/s]Loading weights: 100%|##########| 41/41 [00:00<00:00, 3774.26it/s]
+[1mBertForSequenceClassification LOAD REPORT[0m from: mrm8488/bert-tiny-finetuned-sms-spam-detection
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+[3mNotes:
+- UNEXPECTED[3m	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'test_imports_flushed.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1300]
+[*] All services initialized successfully.
+WARNING:  WatchFiles detected changes in 'test_init.py', 'test_pydantic_only.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\__init__.py", line 30, in <module>
+    from . import dependency_versions_check
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\dependency_versions_check.py", line 16, in <module>
+    from .utils.versions import require_version, require_version_core
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\__init__.py", line 22, in <module>
+    from .auto_docstring import (
+    ...<10 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\auto_docstring.py", line 32, in <module>
+    from .generic import ModelOutput
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\generic.py", line 32, in <module>
+    import numpy as np
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+    ...<3 lines>...
+    )
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\__init__.py", line 22, in <module>
+    from . import multiarray
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 758, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 879, in get_code
+  File "<frozen importlib._bootstrap_external>", line 479, in _validate_timestamp_pyc
+  File "<frozen importlib._bootstrap_external>", line 92, in _unpack_uint32
+KeyboardInterrupt
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "<frozen importlib._bootstrap>", line 1423, in _handle_fromlist
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2096, in __getattr__
+    module = self._get_module(self._class_to_module[name])
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2288, in _get_module
+    return importlib.import_module("." + module_name, self.__name__)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\pipelines\__init__.py", line 27, in <module>
+    from ..image_processing_utils import BaseImageProcessor
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\image_processing_utils.py", line 23, in <module>
+    from .processing_utils import ImagesKwargs, Unpack
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\processing_utils.py", line 79, in <module>
+    from .modeling_utils import PreTrainedAudioTokenizerBase
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\modeling_utils.py", line 86, in <module>
+    from .loss.loss_utils import LOSS_MAPPING
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_utils.py", line 20, in <module>
+    from .loss_d_fine import DFineForObjectDetectionLoss
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_d_fine.py", line 21, in <module>
+    from .loss_for_object_detection import box_iou
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_for_object_detection.py", line 27, in <module>
+    from scipy.optimize import linear_sum_assignment
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\__init__.py", line 422, in <module>
+    from ._optimize import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\_optimize.py", line 33, in <module>
+    from scipy.linalg import cholesky, issymmetric, LinAlgError
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\__init__.py", line 201, in <module>
+    from ._misc import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\_misc.py", line 4, in <module>
+    from .lapack import get_lapack_funcs
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\lapack.py", line 874, in <module>
+    from scipy.linalg import _flapack
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1333, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1267, in _find_spec
+  File "<frozen importlib._bootstrap_external>", line 1295, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 1269, in _get_spec
+  File "<frozen importlib._bootstrap_external>", line 1368, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 152, in _path_stat
+KeyboardInterrupt
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+ Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=16220, pipe_handle=1484)
+                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                                  run_name="__mp_main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\main.py", line 26, in <module>
+    from orchestrator import Orchestrator
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\orchestrator.py", line 12, in <module>
+    from detectors.nlp_detector import NLPDetector
+  File "C:\Users\tanmay\Documents\hackathon\sentinelai\backend\detectors\nlp_detector.py", line 19, in <module>
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+  File "<frozen importlib._bootstrap>", line 1423, in _handle_fromlist
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2096, in __getattr__
+    module = self._get_module(self._class_to_module[name])
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\utils\import_utils.py", line 2288, in _get_module
+    return importlib.import_module("." + module_name, self.__name__)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\pipelines\__init__.py", line 27, in <module>
+    from ..image_processing_utils import BaseImageProcessor
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\image_processing_utils.py", line 23, in <module>
+    from .processing_utils import ImagesKwargs, Unpack
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\processing_utils.py", line 79, in <module>
+    from .modeling_utils import PreTrainedAudioTokenizerBase
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\modeling_utils.py", line 86, in <module>
+    from .loss.loss_utils import LOSS_MAPPING
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_utils.py", line 20, in <module>
+    from .loss_d_fine import DFineForObjectDetectionLoss
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_d_fine.py", line 21, in <module>
+    from .loss_for_object_detection import box_iou
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\transformers\loss\loss_for_object_detection.py", line 27, in <module>
+    from scipy.optimize import linear_sum_assignment
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\__init__.py", line 422, in <module>
+    from ._optimize import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\_optimize.py", line 33, in <module>
+    from scipy.linalg import cholesky, issymmetric, LinAlgError
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\__init__.py", line 201, in <module>
+    from ._misc import *
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\_misc.py", line 4, in <module>
+    from .lapack import get_lapack_funcs
+  File "C:\Users\tanmay\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\lapack.py", line 874, in <module>
+    from scipy.linalg import _flapack
+KeyboardInterrupt
+INFO:     Started server process [4456]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4456]
+INFO:     Stopping reloader process [16220]

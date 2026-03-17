@@ -33,7 +33,7 @@ def _load_lgb():
         print(f"[URLDetector] [WARN] Model file not found: {MODEL_PATH}")
     return None
 
-_load_lgb()   # load at import time
+# model loading moved to score()
 
 SUSPICIOUS_TLDS = {".xyz", ".top", ".pw", ".bid", ".loan", ".club", ".click", ".gdn", ".download"}
 BRAND_KEYWORDS = {"paypal", "google", "microsoft", "apple", "amazon", "netflix", "binance", "coinbase"}

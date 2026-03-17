@@ -19,27 +19,30 @@ export default function ScanPage() {
   const fileRef = useRef(null)
 
   const handleAnalyse = async () => {
+    if (tab !== 2 && !input.trim()) return
     setError(''); setResult(null); setLoading(true)
+    
     try {
+      const base = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      
       if (tab === 2) {
-        if (!fileRef.current?.files[0]) return
+        if (!fileRef.current?.files[0]) {
+          setLoading(false)
+          return
+        }
 
         const formData = new FormData()
         formData.append('file', fileRef.current.files[0])
         formData.append('source', 'manual')
 
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/analyse/file`,
-          {
-            method: 'POST',
-            body: formData,
-            // DO NOT set Content-Type header — browser sets it automatically
-          }
-        )
+        const response = await fetch(`${base}/analyse/file`, {
+          method: 'POST',
+          body: formData,
+        })
 
         if (!response.ok) {
-          const err = await response.json().catch(() => ({}))
-          throw new Error(err.error || `HTTP ${response.status}`)
+          const body = await response.text()
+          throw new Error(`Server error ${response.status}: ${body.slice(0, 200)}`)
         }
 
         const data = await response.json()
@@ -48,14 +51,29 @@ export default function ScanPage() {
         setResult(data)
         if (data.incident_id) addIncident(data)
       } else {
-        const type = tab === 0 ? 'url' : tab === 3 ? 'log' : 'text'
-        const payload = { type, content: input }
-        const res = await analyseInput(payload)
-        setResult(res)
-        if (res.incident_id) addIncident(res) // bubble to global context
+        const type_map = ['url', 'text', 'file', 'log']
+        const res = await fetch(`${base}/analyse`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: input.trim(),
+            type:  type_map[tab],
+          }),
+        })
+
+        if (!res.ok) {
+          const body = await res.text()
+          throw new Error(`Server error ${res.status}: ${body.slice(0, 200)}`)
+        }
+
+        const data = await res.json()
+        if (data.error) throw new Error(data.error)
+        
+        setResult(data)
+        if (data.incident_id) addIncident(data)
       }
     } catch (e) {
-      setError(e.message || e.response?.data?.detail || 'Analysis failed. Is the backend running?')
+      setError(e.message || 'Analysis failed. Is the backend running?')
     } finally {
       setLoading(false)
     }

@@ -11,7 +11,7 @@ import subprocess
 from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 
-from fastapi import FastAPI, File, UploadFile, Form, BackgroundTasks, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, UploadFile, Form, BackgroundTasks, HTTPException, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -38,7 +38,7 @@ app = FastAPI(title="SentinelAI API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -47,13 +47,57 @@ limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-orchestrator = Orchestrator()
-sanitiser = Sanitiser()
-audit_log = AuditLogger()
-surge_detector = SurgeDetector()
-feedback_log = FeedbackLogger()
-robustness_eval = RobustnessEvaluator()
-health_monitor = ModelHealthMonitor()
+# Global service instances (lazy loaded)
+_orchestrator = None
+_sanitiser = None
+_audit_log = None
+_surge_detector = None
+_feedback_log = None
+_robustness_eval = None
+_health_monitor = None
+
+def get_orchestrator():
+    global _orchestrator
+    if _orchestrator is None:
+        print("[*] Initializing Orchestrator...")
+        _orchestrator = Orchestrator()
+    return _orchestrator
+
+def get_sanitiser():
+    global _sanitiser
+    if _sanitiser is None:
+        _sanitiser = Sanitiser()
+    return _sanitiser
+
+def get_audit_log():
+    global _audit_log
+    if _audit_log is None:
+        _audit_log = AuditLogger()
+    return _audit_log
+
+def get_surge_detector():
+    global _surge_detector
+    if _surge_detector is None:
+        _surge_detector = SurgeDetector()
+    return _surge_detector
+
+def get_feedback_log():
+    global _feedback_log
+    if _feedback_log is None:
+        _feedback_log = FeedbackLogger()
+    return _feedback_log
+
+def get_robustness_eval():
+    global _robustness_eval
+    if _robustness_eval is None:
+        _robustness_eval = RobustnessEvaluator()
+    return _robustness_eval
+
+def get_health_monitor():
+    global _health_monitor
+    if _health_monitor is None:
+        _health_monitor = ModelHealthMonitor()
+    return _health_monitor
 
 # Performance metrics
 metrics = {
@@ -119,20 +163,19 @@ agent_registry = {
 }
 
 class AnalyseRequest(BaseModel):
-    url: Optional[str] = None
-    text: Optional[str] = None
-    log_data: Optional[str] = None
+    input: str
+    type: str  # 'url', 'text', 'log'
     source: Optional[str] = "manual"
 
 @app.post("/analyse")
 @limiter.limit("50/minute")
-async def analyse_threat(request: AnalyseRequest, background_tasks: BackgroundTasks):
+async def analyse_threat(request: Request, analyse_req: AnalyseRequest, background_tasks: BackgroundTasks):
     start_time = datetime.now()
     
     # Check blocklist first
-    if request.url:
+    if analyse_req.type == 'url':
         for entry in _blocklist:
-            if entry.get("value") == request.url:
+            if entry.get("value") == analyse_req.input:
                 return {
                     "sentinel_score": 100,
                     "severity": "CRITICAL",
@@ -141,11 +184,15 @@ async def analyse_threat(request: AnalyseRequest, background_tasks: BackgroundTa
                 }
 
     # Run orchestrator
-    result = await orchestrator.run(
-        url=request.url,
-        text=request.text,
-        log_data=request.log_data,
-        source=request.source or "manual"
+    url = analyse_req.input if analyse_req.type == 'url' else None
+    text = analyse_req.input if analyse_req.type == 'text' else None
+    log_data = analyse_req.input if analyse_req.type == 'log' else None
+
+    result = await get_orchestrator().run(
+        url=url,
+        text=text,
+        log_data=log_data,
+        source=analyse_req.source or "manual"
     )
     
     # Enrich and persist
@@ -166,7 +213,7 @@ async def analyse_threat(request: AnalyseRequest, background_tasks: BackgroundTa
 @app.post("/analyse/file")
 async def analyse_file(file: UploadFile = File(...), background_tasks: BackgroundTasks = None):
     content = await file.read()
-    result = await orchestrator.run(
+    result = await get_orchestrator().run(
         file_bytes=content,
         filename=file.filename,
         source="file_upload"
@@ -231,4 +278,4 @@ async def websocket_live(websocket: WebSocket):
         manager.disconnect(websocket)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
