@@ -46,6 +46,7 @@ export const api = {
   // Settings
   blocklist:      (payload)          => call('/blocklist/add', { method:'POST', body: JSON.stringify(payload) }),
   trustedDomains: (domains)          => call('/settings/trusted-domains', { method:'POST', body: JSON.stringify({ domains }) }),
+  setThreshold:   (threshold)        => call('/settings/threshold', { method:'POST', body: JSON.stringify({ threshold }) }),
 
   // Health
   health:       ()                   => call('/health'),

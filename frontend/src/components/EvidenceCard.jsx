@@ -153,15 +153,17 @@ function EvidenceCard({ detector, data }) {
                     </div>
                     <div style={{ fontSize:16, fontWeight:700,
                                   fontFamily:'var(--font-mono)',
-                                  color: val > 0.5 ? '#F04438' :
+                                  color: typeof val !== 'number' ? '#0A84FF' :
+                                         val > 0.5 ? '#F04438' :
                                          val > 0.3 ? '#F79009' : '#12B76A' }}>
-                      {Math.round(val * 100)}%
+                      {typeof val === 'number' ? `${Math.round(val * 100)}%` : String(val).toUpperCase()}
                     </div>
                     <div style={{ width:'100%', height:4, background:'#E5E7EB',
                                   borderRadius:2, marginTop:4 }}>
                       <div style={{
-                        width:`${Math.round(val * 100)}%`, height:'100%',
-                        background: val > 0.5 ? '#F04438' :
+                        width: typeof val === 'number' ? `${Math.round(val * 100)}%` : '100%', height:'100%',
+                        background: typeof val !== 'number' ? '#0A84FF' :
+                                    val > 0.5 ? '#F04438' :
                                     val > 0.3 ? '#F79009' : '#12B76A',
                         borderRadius:2, transition:'width 0.8s ease-out'
                       }}/>

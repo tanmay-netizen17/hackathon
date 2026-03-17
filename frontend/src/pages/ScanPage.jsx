@@ -16,6 +16,7 @@ export default function ScanPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+  const [selectedFile, setSelectedFile] = useState(null)
   const fileRef = useRef(null)
 
   const handleAnalyse = async () => {
@@ -23,9 +24,9 @@ export default function ScanPage() {
     setError(''); setResult(null); setLoading(true)
     try {
       if (tab === 2) {
-        if (!fileRef.current?.files[0]) { setLoading(false); return }
+        if (!selectedFile && !fileRef.current?.files[0]) { setLoading(false); return }
         const formData = new FormData()
-        formData.append('file', fileRef.current.files[0])
+        formData.append('file', selectedFile || fileRef.current.files[0])
         formData.append('source', 'manual')
         const data = await api.analyseFile(formData)
         if (data.error) throw new Error(data.error)
@@ -76,15 +77,35 @@ export default function ScanPage() {
             <div style={{
               border: '2px dashed var(--border-strong)', borderRadius: 12, padding: '48px 32px',
               textAlign: 'center', color: 'var(--text-secondary)', cursor: 'pointer',
-              background: 'var(--bg-sunken)', transition: 'border 0.2s',
+              background: selectedFile ? 'rgba(16, 185, 129, 0.05)' : 'var(--bg-sunken)', transition: 'border 0.2s',
+              borderColor: selectedFile ? 'var(--emerald)' : 'var(--border-strong)',
             }} 
             onMouseOver={e => e.currentTarget.style.borderColor = 'var(--accent)'}
-            onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border-strong)'}
+            onMouseOut={e => e.currentTarget.style.borderColor = selectedFile ? 'var(--emerald)' : 'var(--border-strong)'}
             onClick={() => fileRef.current?.click()}>
-              <input ref={fileRef} type="file" style={{ display: 'none' }} accept=".jpg,.jpeg,.png,.mp4,.avi,.mov,.txt,.log,.webp" />
-              <div style={{ fontSize: 32, marginBottom: 12 }}>📁</div>
-              <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-primary)' }}>Select file to upload</div>
-              <div style={{ fontSize: 13, marginTop: 4, fontFamily: 'var(--font-mono)' }}>JPG, PNG, MP4, AVI, TXT, LOG</div>
+              <input ref={fileRef} type="file" style={{ display: 'none' }} accept=".jpg,.jpeg,.png,.mp4,.avi,.mov,.txt,.log,.webp" 
+                onChange={(e) => {
+                  const file = e.target.files[0]
+                  if (file) {
+                    setSelectedFile(file)
+                    setResult(null)
+                    setError('')
+                  }
+                }}
+              />
+              {selectedFile ? (
+                <div>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>📄</div>
+                  <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedFile.name}</div>
+                  <div style={{ fontSize: 13, marginTop: 4, fontFamily: 'var(--font-mono)' }}>{(selectedFile.size / 1024).toFixed(1)} KB · Click to change</div>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>📁</div>
+                  <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-primary)' }}>Select file to upload</div>
+                  <div style={{ fontSize: 13, marginTop: 4, fontFamily: 'var(--font-mono)' }}>JPG, PNG, MP4, AVI, TXT, LOG</div>
+                </div>
+              )}
             </div>
           ) : (
             <textarea

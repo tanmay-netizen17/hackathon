@@ -116,12 +116,13 @@ class Orchestrator:
 
         if url and "url" in detector_results:
             url_r = detector_results["url"]
-            context_signals["domain_age_new"] = 0 <= url_r.get("domain_age_days", 999) < 7
-            context_signals["digit_substitution"] = url_r.get("has_digit_substitution", False)
+            domain_age = int(url_r.get("domain_age_days", 999) or 999)
+            context_signals["domain_age_new"] = 0 <= domain_age < 7
+            context_signals["digit_substitution"] = bool(url_r.get("has_digit_substitution", False))
             # New signals from url_detector v2.0
-            context_signals["homoglyph_spoofing"] = url_r.get("has_homoglyph", False)
-            context_signals["idn_domain"] = url_r.get("is_idn", False)
-            context_signals["dangerous_scheme"] = url_r.get("dangerous_scheme", False)
+            context_signals["homoglyph_spoofing"] = bool(url_r.get("has_homoglyph", False))
+            context_signals["idn_domain"] = bool(url_r.get("is_idn", False))
+            context_signals["dangerous_scheme"] = bool(url_r.get("dangerous_scheme", False))
 
         if email_headers:
             spf = str(email_headers.get("received-spf", "")).lower()
@@ -193,7 +194,7 @@ class Orchestrator:
             return "unknown"
 
         # Highest-score detector wins
-        top = max(scores, key=scores.get)
+        top = max(scores, key=lambda k: scores[k])
 
         mapping = {
             "nlp": "phishing",

@@ -35,9 +35,9 @@ def _load_lgb():
 
 # model loading moved to score()
 
-SUSPICIOUS_TLDS = {".xyz", ".top", ".pw", ".bid", ".loan", ".club", ".click", ".gdn", ".download"}
-BRAND_KEYWORDS = {"paypal", "google", "microsoft", "apple", "amazon", "netflix", "binance", "coinbase"}
-PHISHING_KEYWORDS = {"login", "verify", "secure", "update", "account", "billing", "signin", "banking"}
+SUSPICIOUS_TLDS = {".xyz", ".top", ".pw", ".bid", ".loan", ".club", ".click", ".gdn", ".download", ".zip", ".mov", ".tk", ".ml", ".ga", ".cf", ".gq"}
+BRAND_KEYWORDS = {"paypal", "google", "microsoft", "apple", "amazon", "netflix", "binance", "coinbase", "chase", "bankofamerica", "wellsfargo", "facebook", "instagram"}
+PHISHING_KEYWORDS = {"login", "verify", "secure", "update", "account", "billing", "signin", "banking", "free", "claim", "gift", "prize", "bonus", "wallet", "crypto", "auth"}
 
 class URLDetector:
     """
@@ -86,10 +86,10 @@ class URLDetector:
             "length": len(url),
             "dot_count": domain.count("."),
             "hyphen_count": domain.count("-"),
-            "digit_count": sum(c.isdigit() for c in domain),
+            "digit_count": sum(c.isdigit() for c in domain) + sum(c.isdigit() for c in url),
             "is_ip": bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", domain)),
             "has_suspicious_tld": any(domain.endswith(tld) for tld in SUSPICIOUS_TLDS),
-            "has_brand_keyword": any(kw in domain for kw in BRAND_KEYWORDS),
+            "has_brand_keyword": any(kw in url for kw in BRAND_KEYWORDS),
             "has_phishing_keyword": any(kw in url for kw in PHISHING_KEYWORDS),
             "has_homoglyphs": any(c in domain for c in "аɑеііоѕсрх"),
             "entropy": self._shannon_entropy(domain),
@@ -100,19 +100,23 @@ class URLDetector:
         if f["is_ip"]: score += 0.8
         if f["has_suspicious_tld"]: score += 0.4
         if f["has_brand_keyword"]: score += 0.5
-        if f["has_phishing_keyword"]: score += 0.3
+        if f["has_phishing_keyword"]: score += 0.4
         if f["has_homoglyphs"]: score += 0.7
-        if f["dot_count"] > 3: score += 0.2
+        if f["dot_count"] > 3: score += 0.3
+        if f["hyphen_count"] > 2: score += 0.2
+        if f["digit_count"] > 6: score += 0.2
         if f["entropy"] > 4.0: score += 0.3
+        if f["length"] > 75: score += 0.2
         return min(1.0, score)
 
     def _simulate_ml_score(self, f: Dict[str, Any]) -> float:
         # Placeholder for actual model.predict()
-        # In a real setup, we'd use lgb_model.predict([list_of_20_features])
-        return self._compute_heuristic(f) * 0.9
+        # We simulate ML score closely aligned with heuristic, or slightly higher
+        base = self._compute_heuristic(f)
+        return min(1.0, base * 1.05)
 
     def _get_risk_category(self, score: float, f: Dict[str, Any]) -> str:
-        if score > 0.8: return "Malicious / Phishing"
+        if score > 0.75: return "Malicious / Phishing"
         if score > 0.5: return "Suspicious"
         if f["has_brand_keyword"] and score > 0.4: return "Brand Impersonation"
         return "Clean"

@@ -32,8 +32,12 @@ class RobustnessEvaluator:
                 {"name": "Combined",   "mutated": attacker.obfuscate_text(attacker.inject_zero_width(input_value))}
             ]
 
-        # 2. Run against orchestrator (lazy import to avoid circular)
-        from main import get_orchestrator
+        # 2. Run against orchestrator (lazy import to break circular dependency)
+        import sys, os as _os
+        _backend = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+        if _backend not in sys.path:
+            sys.path.insert(0, _backend)
+        from main import get_orchestrator  # type: ignore[import]
         orc = get_orchestrator()
         
         results = []
@@ -58,7 +62,7 @@ class RobustnessEvaluator:
             })
             
             if not attack_success:
-                success_count += 1 # Model was robust
+                success_count = success_count + 1  # Model was robust
 
         resilience_score = int((success_count / len(attacks)) * 100) if attacks else 100
 

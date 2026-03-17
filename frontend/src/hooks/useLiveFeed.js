@@ -23,12 +23,18 @@ export function useLiveFeed() {
           setSurgeAlert(data)
           return
         }
-        setIncidents(prev => [data, ...prev].slice(0, 200))
+
+        const payload = data.data || data; // Flatten payload if nested
+        // Normalize fields if missing
+        if (payload.received_at && !payload.timestamp) payload.timestamp = payload.received_at;
+        if (payload.source && !payload.ingestion_source) payload.ingestion_source = payload.source;
+
+        setIncidents(prev => [payload, ...prev].slice(0, 200))
         setStats(prev => ({
           total:    prev.total + 1,
-          critical: prev.critical + (data.severity === 'Critical' ? 1 : 0),
-          blocked:  prev.blocked + (data.sentinel_score >= 61 ? 1 : 0),
-          clean:    prev.clean + (data.severity === 'Clean' ? 1 : 0),
+          critical: prev.critical + (payload.severity === 'Critical' ? 1 : 0),
+          blocked:  prev.blocked + (payload.sentinel_score >= 61 ? 1 : 0),
+          clean:    prev.clean + (payload.severity === 'Clean' ? 1 : 0),
         }))
       }
 

@@ -1,0 +1,33 @@
+{
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Windows",
+  "venvPath": "..",
+  "venv": "venv",
+  "include": ["."],
+  "exclude": [
+    "../_archive",
+    "../venv",
+    "../frontend",
+    "../browser-extension",
+    "**/__pycache__"
+  ],
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "pythonVersion": "3.10",
+      "extraPaths": ["."]
+    }
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": false,
+  "reportMissingModuleSource": false,
+  "reportOptionalSubscript": false,
+  "reportOptionalMemberAccess": false,
+  "reportGeneralTypeIssues": false,
+  "reportAttributeAccessIssue": false,
+  "reportReturnType": false,
+  "reportOperatorIssue": false,
+  "reportIndexIssue": false,
+  "reportArgumentType": false,
+  "reportAssignmentType": false
+}

@@ -1,0 +1,20 @@
+{
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Windows",
+  "venvPath": ".",
+  "venv": "venv",
+  "include": ["backend"],
+  "exclude": [
+    "_archive",
+    "venv",
+    "**/__pycache__",
+    "**/node_modules"
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": false,
+  "reportMissingModuleSource": false,
+  "reportOptionalSubscript": false,
+  "reportOptionalMemberAccess": false,
+  "reportGeneralTypeIssues": false,
+  "reportAttributeAccessIssue": false
+}

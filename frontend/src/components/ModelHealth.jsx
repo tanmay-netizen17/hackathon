@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getModelHealth, setThreshold } from '../api/sentinelApi'
+import { api } from '../api/spectraApi'
 import { SectionHeader } from './SectionHeader'
 
 export default function ModelHealth() {
@@ -7,9 +7,9 @@ export default function ModelHealth() {
   const [thresholdVal, setThresholdVal] = useState(40)
 
   useEffect(() => {
-    getModelHealth().then(setHealth).catch(console.error)
+    api.modelHealth().then(setHealth).catch(console.error)
     const intv = setInterval(() => {
-      getModelHealth().then(setHealth).catch(console.error)
+      api.modelHealth().then(setHealth).catch(console.error)
     }, 15000)
     return () => clearInterval(intv)
   }, [])
@@ -17,7 +17,7 @@ export default function ModelHealth() {
   const handleThresholdChange = (e) => {
     const val = parseInt(e.target.value, 10)
     setThresholdVal(val)
-    setThreshold(val).catch(console.error)
+    api.setThreshold(val).catch(console.error)
   }
 
   if (!health) return <div className="card" style={{ padding: 24, textAlign: 'center', color: 'var(--text-muted)' }}>Loading Analytics…</div>

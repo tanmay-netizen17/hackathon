@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { ThemeContext } from '../App'
-import { setMode, startAgent } from '../api/sentinelApi'
+import { api } from '../api/spectraApi'
 import { SectionHeader } from '../components/SectionHeader'
 import { useMode } from '../context/ModeContext'
 import { useAgentStatus } from '../hooks/useAgentStatus'
@@ -143,9 +143,9 @@ function AgentCard({ name, description, status, actionLabel, onAction }) {
     setLoading(false)
   }
 
-  const dotColour = status === 'online' ? '#12B76A'
-    : status === 'offline' ? '#9CA3AF'
-      : '#F79009'  // starting
+  const dotColour = status === 'online' ? '#10B981' // Vibrant Emerald
+    : status === 'offline' ? '#9CA3AF' // Neutral Grey
+    : '#F59E0B'  // Vibrant Amber for starting
 
   return (
     <div style={{
@@ -357,7 +357,7 @@ function EmailDaemonConfig() {
     setLoading(true)
     setError(null)
     try {
-      await startAgent('email_daemon', { host, user, password: pass })
+      await api.startAgent('email_daemon', { host, user, password: pass })
       localStorage.setItem('email_daemon_config', JSON.stringify({ host, user }))
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
@@ -430,7 +430,7 @@ function LogCollectorConfig() {
     setLoading(true)
     setError(null)
     try {
-      await startAgent('log_collector', { type: logType })
+      await api.startAgent('log_collector', { type: logType })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (e) {
